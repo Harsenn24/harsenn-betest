@@ -1,14 +1,19 @@
+const { validationResult } = require("express-validator");
 const saveRedis = require("../../helper/saveRedis");
 const UserData = require("../../models")
 const { ObjectId } = require('bson');
+const { generateValidatorError } = require("../../helper/generateErrors");
 
 async function updateUser
     (req, res) {
     try {
 
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) throw (generateValidatorError(errors.array()));
+
         const { user_id, accountNumberUpdated } = req.body
 
-        await UserData.updateOne(
+        const resultUpdated = await UserData.updateOne(
             { _id: new ObjectId(user_id) },
             {
                 $set: {
@@ -16,6 +21,12 @@ async function updateUser
                 },
             }
         );
+
+        if(resultUpdated.matchedCount !== 1) {
+            throw {
+                message: "user id is failed to update"
+            }
+        }
 
         await saveRedis()
 
