@@ -8,6 +8,8 @@ const app = express();
 
 app.use(express.json());
 
+app.get("/", (req, res) => res.send("Application running well"));
+
 app.use(userRouter)
 
 const usedDb = process.env.NODE_ENV === "TEST" ? process.env.MONGO_URI_TEST : process.env.MONGO_URI
