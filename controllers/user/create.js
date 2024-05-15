@@ -1,13 +1,11 @@
-const { hashPassword } = require("../../helper/bcrypt")
+const { hashPassword } = require("../../helper/bcrypt");
 const saveRedis = require("../../helper/saveRedis")
 const UserData = require("../../models")
-const { v4: uuid } = require('uuid');
 
 async function createUser(req, res) {
     try {
+        
         req.body.password = hashPassword(req.body.password)
-
-        // req.body.uuid = uuid()
 
         const newUser = new UserData(req.body)
 
